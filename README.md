@@ -2,7 +2,7 @@
 
 Code for a snake game that runs inside a terminal, cleanly
 
-![alt test](https://github.com/ejlly/term_snake/blob/main/images/Snake_image.png)
+![alt test](https://github.com/ejlly/term_snake/blob/main/images/Snake_image.png?raw=true)
 
 # Compilation
 Compile with make to retrieve the executable
