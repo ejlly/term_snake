@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <signal.h>
 
 #define LIG 20
 #define COL 40
@@ -25,6 +26,12 @@ char bon2[] = "\033[48;2;22;248;12m\033[38;2;205;49;49m#\033[m";
 int pos_cur_x, pos_cur_y;
 int score;
 int init; //nombre d'anneaux du serpent à sa naissance
+
+bool interrupt = false;
+
+void signalHandler(int dummy){
+	interrupt = true;	
+}
 
 void update_score(){
 	printf("\033[%dA\033[%dDscore : %d\n", pos_cur_x + 1, pos_cur_y, ++score);
@@ -218,20 +225,28 @@ int main(){
 
 	init = 3;
 
+	signal(SIGINT, signalHandler);
+
 	//initialisation du jeu avec naissance de score 4
 	while(isAlive && init > 0){
 		nxt_input(fd);
 		isAlive = nxt_frame();
+		isAlive = isAlive && !interrupt;
 		init--;
+		
 	}
 
 
 	while(isAlive){
 		nxt_input(fd);
 		isAlive = nxt_frame();
+		isAlive = isAlive && !interrupt;
 	}
 
-	update_tab(LIG + 1, 0, "\nPERDU !!!!");
+	if(!interrupt)
+		update_tab(LIG + 1, 0, "\nPERDU !!!!");
+	else
+		update_tab(LIG + 1, 0, "");
 
     //Reset du terminal
 	printf("\033[?25h\n"); //rendre le curseur visible
